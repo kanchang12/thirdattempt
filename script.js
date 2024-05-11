@@ -12,18 +12,16 @@ document.getElementById('inputForm').addEventListener('submit', async (event) =>
             body: JSON.stringify({ user_input: userInput })
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        if (data && data.generated_text) {
-            document.getElementById('responseContainer').innerText = data.generated_text;
+        if (response.ok) {
+            const data = await response.json();
+            const responseContainer = document.getElementById('responseContainer');
+            responseContainer.innerText = data.generated_text || 'Error processing input';
         } else {
-            throw new Error('Invalid response format');
+            throw new Error(`Request failed with status: ${response.status}`);
         }
     } catch (error) {
         console.error('Error:', error);
-        document.getElementById('responseContainer').innerText = 'Error processing input';
+        const responseContainer = document.getElementById('responseContainer');
+        responseContainer.innerText = 'Error processing input';
     }
 });
