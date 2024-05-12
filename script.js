@@ -1,3 +1,5 @@
+// script.js
+
 document.getElementById('inputForm').addEventListener('submit', async (event) => {
     event.preventDefault();
 
@@ -10,18 +12,20 @@ document.getElementById('inputForm').addEventListener('submit', async (event) =>
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ user_input: userInput })
+            
         });
 
-        if (response.ok) {
-            const data = await response.json();
-            const responseContainer = document.getElementById('responseContainer');
-            responseContainer.innerText = data.generated_text || 'Error processing input';
-        } else {
-            throw new Error(`Request failed with status: ${response.status}`);
+        if (!response.ok) {
+            throw new Error(`Request failed with status ${response.status}`);
         }
+
+        const data = await response.json();
+        const generatedText = data.generated_text;
+
+        // Update HTML element to display the generated text
+        document.getElementById('responseContainer').innerText = generatedText;
     } catch (error) {
         console.error('Error:', error);
-        const responseContainer = document.getElementById('responseContainer');
-        responseContainer.innerText = 'Error processing input';
+        document.getElementById('responseContainer').innerText = 'Error processing input';
     }
 });
