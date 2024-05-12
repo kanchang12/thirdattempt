@@ -32,7 +32,7 @@ def submit():
                     "role": "USER",
                     "parts": [
                         {
-                            "text": user_input
+                            "text": "Why Sky is blue"
                         }
                     ]
                 }
