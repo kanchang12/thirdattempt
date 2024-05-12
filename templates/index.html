@@ -20,33 +20,38 @@
 
     <script>
         function submitForm() {
-            // Get form data
-            let formData = new FormData();
-            formData.append('file', document.getElementById('fileInput').files[0]);
-            formData.append('input', document.getElementById('textInput').value);
+    // Prepare data to be sent as JSON
+    let formData = {
+        file: document.getElementById('fileInput').files[0],
+        input: document.getElementById('textInput').value
+    };
 
-            // Send AJAX request to Flask endpoint
-            fetch('/submit', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Request failed with status ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Process and display response
-                let responseContainer = document.getElementById('responseContainer');
-                responseContainer.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-            })
-            .catch(error => {
-                console.error('Error:', error.message);
-                let responseContainer = document.getElementById('responseContainer');
-                responseContainer.innerHTML = `<div style="color: red;">Error: ${error.message}</div>`;
-            });
+    // Send POST request with JSON data
+    fetch('/submit', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'  // Set Content-Type header to JSON
+        },
+        body: JSON.stringify(formData)  // Convert formData to JSON string
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Request failed with status ${response.status}`);
         }
+        return response.json();
+    })
+    .then(data => {
+        // Process and display response
+        let responseContainer = document.getElementById('responseContainer');
+        responseContainer.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+    })
+    .catch(error => {
+        console.error('Error:', error.message);
+        let responseContainer = document.getElementById('responseContainer');
+        responseContainer.innerHTML = `<div style="color: red;">Error: ${error.message}</div>`;
+    });
+}
+
     </script>
 </body>
 </html>
