@@ -21,7 +21,7 @@ exports.handler = async function(event, context) {
 };
 
 async function generateText(userInput) {
-    const openaiEndpoint = 'https://api.openai.com/v1/engines/davinci/completions';
+    const openaiEndpoint = 'https://api.openai.com/v1/chat/completions';
     const openaiApiKey = process.env.OPENAI_API_KEY;
 
     const requestData = {
