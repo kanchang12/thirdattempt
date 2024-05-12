@@ -1,63 +1,64 @@
 import os
-from flask import Flask, request, jsonify, render_template
-import pandas as pd
 import requests
+from vertexai.generative_models import (
+    Content,
+    FunctionDeclaration,
+    GenerationConfig,
+    GenerativeModel,
+    Part,
+    Tool,
+)
 
-app = Flask(__name__)
-
-# Get OpenAI API key from environment variable
-api_key = os.getenv('apiKey')
-
-# Function to send file content to OpenAI API
-def send_to_openai(content):
-    headers = {
-        'Content-Type': 'application/json',
-        'Authorization': f'Bearer {api_key}',
-    }
-    data = {
-        'model': 'text-davinci-002',
-        'prompt': content,
-        'max_tokens': 50
-    }
-    response = requests.post('https://api.openai.com/v1/chat/completions', headers=headers, json=data)
-    return response.json()
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/submit', methods=['POST'])
-def submit():
-    # Check if a file is uploaded
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file uploaded'}), 400
-
-    file = request.files['file']
-
-    # Check if the file has a valid filename
-    if file.filename == '':
-        return jsonify({'error': 'No file selected'}), 400
-
-    # Read the CSV file using pandas
+def process_user_input(user_input):
     try:
-        df = pd.read_csv(file)
-        # Get content from the CSV file
-        content = ' '.join(df.iloc[:, 0].astype(str).tolist())  # Assume first column contains text data
-        print("File content:")
-        print(content)
+        # Define the API key and API endpoint
+        api_key = os.getenv('apiKey')  # Replace with your API key
+        endpoint = "https://api.vertexai.cloud/v1/generative-models/models/gemini-1.0-pro-001:generateContent"
 
-        # Additional input from the form
-        user_input = request.form.get('input', '')  # Get the 'input' field value from the form
-        
-        # Combine CSV content with additional input
-        combined_content = f"{user_input} {content}"
+        # Define the user's prompt in a Content object
+        user_prompt_content = Content(
+            role="user",
+            parts=[
+                Part.from_text(user_input),
+            ],
+        )
 
-        # Send combined content to OpenAI API
-        openai_response = send_to_openai(combined_content)
-        return jsonify(openai_response), 200
-    
+        # Define a function declaration for an API request
+        function_name = "get_current_weather"
+        get_current_weather_func = FunctionDeclaration(
+            name=function_name,
+            description="Get the current weather in a given location",
+            parameters={
+                "type": "object",
+                "properties": {"location": {"type": "string", "description": "Location"}},
+            },
+        )
+
+        # Create a Tool including the function declaration
+        weather_tool = Tool(
+            function_declarations=[get_current_weather_func],
+        )
+
+        # Construct the request payload
+        payload = {
+            "content": user_prompt_content.to_dict(),
+            "generationConfig": {"temperature": 0},
+            "tools": [weather_tool.to_dict()],
+        }
+
+        # Send the request to the API endpoint with the API key in the headers
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}",
+        }
+        response = requests.post(endpoint, json=payload, headers=headers)
+
+        # Extract the model response from the API response
+        if response.status_code == 200:
+            model_response = response.json()
+            return model_response.get("text", "No response text available")
+        else:
+            return f"Error: API request failed with status code {response.status_code}"
+
     except Exception as e:
-        return jsonify({'error': f'Failed to read or process CSV: {str(e)}'}), 400
-
-if __name__ == '__main__':
-    app.run(debug=True)
+        return f"Error: {str(e)}"
