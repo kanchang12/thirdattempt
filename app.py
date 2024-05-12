@@ -3,7 +3,7 @@ import pandas as pd
 import requests
 from flask import Flask, request, jsonify, render_template
 from openai import OpenAI
-client = OpenAI()
+
 
 app = Flask(__name__)
 
@@ -11,7 +11,7 @@ app = Flask(__name__)
 #PROJECT_ID = "algebraic-ward-422922-e3"
 YOUR_ACCESS_TOKEN = os.getenv('apiKey')
 print(YOUR_ACCESS_TOKEN)
-
+client = OpenAI()
 @app.route('/')
 def index():
     print('index')
