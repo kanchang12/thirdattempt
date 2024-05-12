@@ -2,16 +2,22 @@ import os
 import pandas as pd
 import requests
 from flask import Flask, request, jsonify, render_template
-from openai import OpenAI
+from openai import OpenAI, ApiException
 
 
 app = Flask(__name__)
 
-# Define your Google Cloud project ID and access token
-#PROJECT_ID = "algebraic-ward-422922-e3"
-YOUR_ACCESS_TOKEN = os.getenv('apiKey')
-print(YOUR_ACCESS_TOKEN)
-client = OpenAI()
+# Retrieve the OpenAI API key from environment variable
+OPENAI_API_KEY = os.getenv('apiKey')
+if not OPENAI_API_KEY:
+    raise ValueError("OpenAI API key not found. Set OPENAI_API_KEY environment variable.")
+
+# Initialize the OpenAI client with the API key
+client = OpenAI(api_key=OPENAI_API_KEY)
+print(OPENAI_API_KEY)
+
+
+
 @app.route('/')
 def index():
     print('index')
