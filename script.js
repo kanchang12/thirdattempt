@@ -1,9 +1,8 @@
-// script.js
-
 document.getElementById('inputForm').addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const userInput = document.getElementById('userInput').value;
+    // Prepare the message to send to OpenAI (in this case, "Hi")
+    const userInput = "Hi";
     console.log('User input:', userInput);
 
     try {
