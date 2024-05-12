@@ -24,9 +24,11 @@ def submit():
                                                     {"role": "user", "content": "Hello!"}
                                                 ]
                                                )
-response = completion.choices[0].message
+
 print(completion.choices[0].message)
-return jsonify(response)
+message_content = completion.choices[0].message
+return jsonify({"response": message_content}), 200
+
 
 if __name__ == '__main__':
     app.run(debug=True)
