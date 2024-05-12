@@ -6,7 +6,10 @@ import openai
 app = Flask(__name__)
 
 # Define the OpenAI API key
+
 OPENAI_API_KEY = os.getenv('apiKey')
+OPENAI_ORGANIZATION = "org-fq13CkVOYwvZK7BjeJxqySk1"
+OPENAI_PROJECT = "proj_VFmwoRIS4vUBNX20sw0MPHhD"
 print(OPENAI_API_KEY)
 
 @app.route('/')
@@ -23,7 +26,7 @@ def submit():
         print(user_input)
 
         # Define the OpenAI endpoint URL
-        endpoint_url = "https://api.openai.com/v1/chat/completions"
+        endpoint_url = "https://api.openai.com/v1/models"
 
         # Prepare the request payload for the OpenAI API
         request_payload = {
@@ -35,7 +38,9 @@ def submit():
         # Set the headers with Authorization and Content-Type
         headers = {
             "Authorization": f"Bearer {OPENAI_API_KEY}",
-            "Content-Type": "application/json"
+           "Content-Type": "application/json",
+            "OpenAI-Organization": OPENAI_ORGANIZATION,
+            "OpenAI-Project": OPENAI_PROJECT
         }
 
         # Send the POST request to the OpenAI API
