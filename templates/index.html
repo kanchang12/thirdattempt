@@ -1,75 +1,131 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>OpenAI Chat API Example</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body {
+      text-align: center;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 60%;
+      margin: 50px auto;
+    }
+
+    .heading {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+
+    .gap {
+      margin: 15px 0;
+    }
+
+    #userInput {
+      width: 100%;
+      resize: none;
+    }
+
+    #responseContainer {
+      width: 80%;
+      margin-top: 30px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      text-align: justify;
+    }
+
+    #download {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-
-    <h2>OpenAI Chat API Example</h2>
-    
-    <!-- File upload form -->
+  <div class="container">
+    <h1 class="heading">Prototype Data Analysis Mentor</h1>
+    <div class="gap"></div>
     <form id="uploadForm" enctype="multipart/form-data">
-        <label for="fileInput">Upload CSV file:</label>
-        <input type="file" id="fileInput" accept=".csv" name="csv_file"><br><br>
-        <label for="user_input">User Input:</label><br>
-        <textarea id="user_input" name="user_input" rows="4" cols="50"></textarea><br><br>
-        <button type="button" onclick="submitForm()">Submit</button>
+      <input type="file" id="fileInput" name="csv_content" accept=".csv">
     </form>
-    
+    <div class="gap"></div>
+    <textarea id="userInput" name="user_input" rows="4" cols="50" maxlength="150" placeholder="Enter your input (limited to 150 characters)"></textarea>
+    <div class="gap"></div>
+    <button type="button" onclick="submitForm()">Submit</button>
+    <div class="gap"></div>
     <div id="responseContainer"></div>
+    <div id="download">
+      <button onclick="downloadText('txt')">Download as TXT</button>
+      <button onclick="downloadText('doc')">Download as DOC</button>
+    </div>
+  </div>
 
-    <script>
-        function submitForm() {
-            // Get user input
-            var userInput = document.getElementById('user_input').value;
+  <script>
+    function submitForm() {
+      var fileInput = document.getElementById('fileInput');
+      var file = fileInput.files[0];
 
-            // Get uploaded CSV file
-            var fileInput = document.getElementById('fileInput');
-            var file = fileInput.files[0];
+      if (!file) {
+        alert('Please select a CSV file.');
+        return;
+      }
 
-            if (!file) {
-                alert('Please select a CSV file.');
-                return;
+      var userInput = document.getElementById('userInput').value;
+
+      // Check if user input exceeds the limit (optional)
+      if (userInput.length > 150) {
+        alert('User input exceeds the 150 character limit.');
+        return;
+      }
+
+      // Prepare the request payload
+      var formData = new FormData();
+      formData.append('csv_content', file);
+      formData.append('user_input', userInput);
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/submit', true);
+
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          if (xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            var responseContainer = document.getElementById('responseContainer');
+            if (responseContainer) {
+              // Display response content as paragraphs with justified alignment
+              responseContainer.innerHTML = '<p style="text-align: justify;">' + response.response + '</p>';
             }
-
-            // Read the file contents
-            var reader = new FileReader();
-            reader.onload = function(event) {
-                var csvContent = event.target.result;
-
-                // Append user input to the CSV content
-                var modifiedCsvContent = csvContent + '\n' + userInput;
-
-                // Prepare the request payload
-                var formData = new FormData();
-                formData.append('csv_content', modifiedCsvContent);
-
-                // Send POST request to Flask backend
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', '/submit', true);
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-                // Define callback function to handle response
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                        if (xhr.status === 200) {
-                            var response = JSON.parse(xhr.responseText);
-                            document.getElementById('responseContainer').innerHTML = '<p>' + response.response + '</p>';
-                        } else {
-                            console.error('Error:', xhr.statusText);
-                            document.getElementById('responseContainer').innerHTML = '<p>Error: ' + xhr.statusText + '</p>';
-                        }
-                    }
-                };
-
-                // Send the form data
-                xhr.send(formData);
-            };
-
-            // Read the file as text
-            reader.readAsText(file);
+          } else {
+            console.error('Error:', xhr.statusText);
+            alert('Failed to process the request.');
+          }
         }
-    </script>
+      };
+
+      xhr.send(formData);
+    }
+
+    function downloadText(fileType) {
+      var message = document.getElementById('responseContainer').textContent;
+      if (!message) {
+        alert('No message to download!');
+        return;
+      }
+
+      var filename = 'data_analysis_message.' + fileType;
+      var blob = new Blob([message], { type: 'text/plain' });
+
+      if (window.navigator.msSaveOrOpenBlob) { // For IE11
+        window.navigator.msSaveOrOpenBlob(blob, filename);
+      } else {
+        var link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+      }
+    }
+  </script>
 </body>
 </html>
