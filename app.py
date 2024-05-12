@@ -7,7 +7,7 @@ from flask import Flask, request, jsonify, render_template
 app = Flask(__name__)
 
 # Define your Google Cloud project ID and access token
-PROJECT_ID = "algebraic-ward-422922-e3"
+#PROJECT_ID = "algebraic-ward-422922-e3"
 YOUR_ACCESS_TOKEN = os.getenv('apiKey')
 
 @app.route('/')
@@ -24,7 +24,7 @@ def submit():
         user_input = data.get('user_input')
 
         # Prepare the request payload for the Google Cloud AI Platform endpoint
-        endpoint_url = f"https://us-central1-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}/locations/us-central1/publishers/google/models/gemini-1.0-pro:streamGenerateContent"
+        endpoint_url = "https://api.openai.com/v1/chat/completions"
         
         request_payload = {
             "contents": [
