@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import requests
 from flask import Flask, request, jsonify, render_template
-from openai import OpenAI, ApiException
+from openai import OpenAI
 
 
 app = Flask(__name__)
