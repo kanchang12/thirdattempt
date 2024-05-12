@@ -1,32 +1,27 @@
 import os
 import requests
 from flask import Flask, request, jsonify, render_template
-import openai
 
 app = Flask(__name__)
 
-# Define the OpenAI API key
-
+# Define the OpenAI API key and project details
 OPENAI_API_KEY = os.getenv('apiKey')
 OPENAI_ORGANIZATION = "org-fq13CkVOYwvZK7BjeJxqySk1"
 OPENAI_PROJECT = "proj_VFmwoRIS4vUBNX20sw0MPHhD"
-print(OPENAI_API_KEY)
 
 @app.route('/')
 def index():
-    print(index)
+    print("index")
     return render_template('index.html')
 
 @app.route('/submit', methods=['GET', 'POST'])
 def submit():
+    print("a")
     try:
+        print("submit")
         # Extract user input from the POST request
         user_input = request.form.get('user_input')
-        print("user input")
-        print(user_input)
-
-        # Define the OpenAI endpoint URL
-        endpoint_url = "https://api.openai.com/v1/models"
+        print("Received user input:", user_input)
 
         # Prepare the request payload for the OpenAI API
         request_payload = {
@@ -38,12 +33,13 @@ def submit():
         # Set the headers with Authorization and Content-Type
         headers = {
             "Authorization": f"Bearer {OPENAI_API_KEY}",
-           "Content-Type": "application/json",
+            "Content-Type": "application/json",
             "OpenAI-Organization": OPENAI_ORGANIZATION,
             "OpenAI-Project": OPENAI_PROJECT
         }
 
         # Send the POST request to the OpenAI API
+        endpoint_url = "https://api.openai.com/v1/models"
         response = requests.post(endpoint_url, json=request_payload, headers=headers)
 
         # Process the response from the OpenAI API
