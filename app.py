@@ -135,7 +135,7 @@ context_data = load_context_data()
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    print("In function")
+    
     try:
         csv_file = request.files.get('csv_content')
 
@@ -149,10 +149,10 @@ def submit():
         try:
             df = pd.read_csv(csv_file)  # Can access the file using the filename
             csv_string = df.to_string()
-            print(csv_string)
+            
             # Retrieve user input from the form data
             user_input = request.form.get('user_input')
-            print(user_input)
+           
             prompt = csv_string + user_input
 
             # Prepare the chat completion request to OpenAI
@@ -167,7 +167,7 @@ def submit():
             # Extract the response message content
             response_content = completion['choices'][0]['message']['content']
 
-            print(response_content)
+            
 
             # Return the response in JSON format
             return jsonify({'response': response_content}), 200
