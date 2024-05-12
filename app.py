@@ -2,7 +2,8 @@ import os
 import requests
 from flask import Flask, request, jsonify, render_template
 import openai
-print(Hi)
+
+
 app = Flask(__name__)
 
 @app.route('/')
