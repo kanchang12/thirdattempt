@@ -27,6 +27,12 @@ def load_context_data():
 
     step4: You will return a diagram of the function as well
 
+    Important: If there is less than 20 records, return a report with maximum 50 words
+    if there is 100 records, the report should have minimum 150 words.
+    For records, with more than 200 records, the report should be 600 words.
+
+    Important: The data should be in paragraphs.
+
 
     example
 
