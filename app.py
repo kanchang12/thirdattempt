@@ -11,6 +11,8 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
+
+
 # Define the OpenAI API key and project details
 OPENAI_API_KEY = os.getenv('apiKey')
 print(OPENAI_API_KEY)
@@ -26,8 +28,7 @@ def submit():
                                                )
 
     print(completion.choices[0].message)
-    message_content = completion.choices[0].message
-    return jsonify({"response": message_content}), 200
+    
 
 
 if __name__ == '__main__':
