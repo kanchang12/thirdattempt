@@ -1,35 +1,21 @@
-document.getElementById('inputForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
+function sendInput() {
+    var userInput = document.getElementById("userInput").value;
 
-    // Prepare the message to send to OpenAI (in this case, "Hi")
-    const userInput = "Hi";
-    console.log('User input:', userInput);
+    // Create a new XMLHttpRequest object
+    var xhr = new XMLHttpRequest();
 
-    try {
-        const response = await fetch('/.netlify/functions/openaiRequest', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ user_input: userInput })
-        });
-        console.log('Fetch request sent');
+    // Configure it: GET-request for the URL
+    xhr.open('POST', '/submit', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
 
-        if (!response.ok) {
-            throw new Error(`Request failed with status ${response.status}`);
+    // Send the request over to Flask
+    xhr.send(JSON.stringify({ input: userInput }));
+
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            console.log('Request was successful');
+        } else {
+            console.log('Request failed');
         }
-
-        const data = await response.json();
-        console.log('Response data:', data);
-
-        const generatedText = data.generated_text;
-        console.log('Generated text:', generatedText);
-
-        // Update HTML element to display the generated text
-        document.getElementById('responseContainer').innerText = generatedText;
-        console.log('Response displayed on HTML page');
-    } catch (error) {
-        console.error('Error:', error);
-        document.getElementById('responseContainer').innerText = 'Error processing input';
-    }
-});
+    };
+}
