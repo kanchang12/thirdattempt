@@ -18,7 +18,7 @@ def submit():
 
         # Extract relevant data from the request (adjust as needed based on your data structure)
         user_input = data.get('user_input')
-        location = data.get('location')
+        #location = data.get('location')
 
         # Prepare the request payload for the Google Cloud AI Platform endpoint
         endpoint_url = f"https://us-central1-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}/locations/us-central1/publishers/google/models/gemini-1.0-pro:streamGenerateContent"
@@ -37,8 +37,11 @@ def submit():
             "systemInstruction": {
                 "role": "USER",
                 "parts": [
-                    {
-                        "text": f"Get the weather for {location}"
+                     {
+                        "fileData": {
+                            "mimeType": "text/plain",
+                            "fileUri": "https://gist.githubusercontent.com/kanchang12/509b21ef02ab5aefa526b956925423b7/raw/f2dc0569a96b9b4658e38486caefbd19f3572fb7/system_instruction.txt"  # Provide the URL of the file containing data
+                        }
                     }
                 ]
             },
