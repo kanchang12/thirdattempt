@@ -2,38 +2,17 @@
 <html>
 <head>
     <title>OpenAI Chat API Example</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <h2>OpenAI Chat API Example</h2>
     <form id="chatForm">
-        <button type="submit">Submit</button>
+        <label for="user_input">User Input:</label>
+        <input type="text" id="user_input" name="user_input">
+        <button type="button" onclick="submitForm()">Submit</button>
     </form>
     
     <div id="responseContainer"></div>
 
-    <script>
-        $(document).ready(function() {
-            // Handle form submission
-            $('#chatForm').submit(function(event) {
-                event.preventDefault();
-
-                // Send AJAX request to Flask backend
-                $.ajax({
-                    type: 'POST',
-                    url: '/submit',
-                    data: { user_input: "hi" }, // Hardcoded message "hi"
-                    success: function(response) {
-                        // Display response content on the HTML page
-                        $('#responseContainer').html('<p>' + response.response + '</p>');
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error:', error);
-                        $('#responseContainer').html('<p>Error: ' + error + '</p>');
-                    }
-                });
-            });
-        });
-    </script>
+    <script src="scripts.js"></script>
 </body>
 </html>
