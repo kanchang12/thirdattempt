@@ -2,16 +2,16 @@ import os
 import requests
 from flask import Flask, request, jsonify, render_template
 import openai
-
+print(Hi)
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    print("index")
     return render_template('index.html')
 
 # Define the OpenAI API key and project details
 OPENAI_API_KEY = os.getenv('apiKey')
+print(OPENAI_API_KEY)
 
 
 @app.route('/submit', methods=['GET', 'POST'])
