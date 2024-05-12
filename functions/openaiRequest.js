@@ -6,15 +6,18 @@ exports.handler = async function(event, context) {
     try {
         const requestBody = JSON.parse(event.body);
         const userInput = requestBody.user_input;
+        console.log('Received user input:', userInput);
 
         // Call OpenAI API to generate text based on user input
         const generatedText = await generateText(userInput);
+        console.log('Generated text from OpenAI:', generatedText);
 
         return {
             statusCode: 200,
             body: JSON.stringify({ generated_text: generatedText })
         };
     } catch (error) {
+        console.error('Error in Netlify Function:', error);
         return {
             statusCode: 500,
             body: JSON.stringify({ error: error.message })
@@ -40,6 +43,7 @@ async function generateText(userInput) {
         frequency_penalty: 0,
         presence_penalty: 0
     };
+    console.log('Request data for OpenAI:', requestData);
 
     const response = await fetch(openaiEndpoint, {
         method: 'POST',
@@ -49,13 +53,17 @@ async function generateText(userInput) {
         },
         body: JSON.stringify(requestData)
     });
+    console.log('OpenAI API request sent');
 
     if (!response.ok) {
         throw new Error(`OpenAI request failed with status ${response.status}`);
     }
 
     const responseData = await response.json();
+    console.log('Response data from OpenAI:', responseData);
+
     const generatedText = responseData.choices[0].text.trim();
+    console.log('Generated text:', generatedText);
 
     return generatedText;
 }
