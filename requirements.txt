@@ -1,6 +1,5 @@
 Flask
-openai
+openai==1.2.0
 pandas
 gunicorn
 requests
-OpenAI==1.2.0
