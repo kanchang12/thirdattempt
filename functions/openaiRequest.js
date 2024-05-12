@@ -3,19 +3,16 @@ const fetch = require('node-fetch');
 
 exports.handler = async function(event, context) {
     try {
-        // Parse the request body
         const { user_input } = JSON.parse(event.body);
 
         // Call the OpenAI API to generate text
         const generatedText = await generateText(user_input);
 
-        // Return a successful response
         return {
             statusCode: 200,
             body: JSON.stringify({ generated_text: generatedText })
         };
     } catch (error) {
-        // Return an error response
         return {
             statusCode: 500,
             body: JSON.stringify({ error: error.message })
@@ -25,7 +22,7 @@ exports.handler = async function(event, context) {
 
 async function generateText(userInput) {
     const openaiEndpoint = 'https://api.openai.com/v1/engines/davinci/completions';
-    const openaiApiKey = process.env.apiKey; // Retrieve API key from environment variables
+    const openaiApiKey = process.env.OPENAI_API_KEY;
 
     const requestData = {
         prompt: userInput,
