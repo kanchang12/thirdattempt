@@ -12,8 +12,6 @@ def index():
 
 # Define the OpenAI API key and project details
 OPENAI_API_KEY = os.getenv('apiKey')
-OPENAI_ORGANIZATION = "org-fq13CkVOYwvZK7BjeJxqySk1"
-OPENAI_PROJECT = "proj_VFmwoRIS4vUBNX20sw0MPHhD"
 
 
 @app.route('/submit', methods=['GET', 'POST'])
@@ -37,9 +35,7 @@ def submit():
         # Set the headers with Authorization and Content-Type
         headers = {
             "Authorization": f"Bearer {OPENAI_API_KEY}",
-            "Content-Type": "application/json",
-            "OpenAI-Organization": OPENAI_ORGANIZATION,
-            "OpenAI-Project": OPENAI_PROJECT
+            "Content-Type": "application/json"
         }
 
         # Send the POST request to the OpenAI API
