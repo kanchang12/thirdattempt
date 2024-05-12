@@ -1,57 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Upload CSV File</title>
+    <title>OpenAI Chat API Example</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h2>Upload a CSV File</h2>
-    <form id="uploadForm" enctype="multipart/form-data">
-        <input type="file" id="fileInput" name="file" accept=".csv">
-        <br><br>
-        <label for="input">Input:</label>
-        <input type="text" id="textInput" name="input">
-        <br><br>
-        <button type="button" onclick="submitForm()">Submit</button>
+    <h2>OpenAI Chat API Example</h2>
+    <form id="chatForm">
+        <label for="user_input">User Input:</label>
+        <input type="text" id="user_input" name="user_input">
+        <button type="submit">Submit</button>
     </form>
-
-    <div id="responseContainer">
-        <!-- Response will be displayed here -->
-    </div>
+    
+    <div id="responseContainer"></div>
 
     <script>
-        function submitForm() {
-    // Prepare data to be sent as JSON
-    let formData = {
-        file: document.getElementById('fileInput').files[0],
-        input: document.getElementById('textInput').value
-    };
+        $(document).ready(function() {
+            // Handle form submission
+            $('#chatForm').submit(function(event) {
+                event.preventDefault();
 
-    // Send POST request with JSON data
-    fetch('/submit', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'  // Set Content-Type header to JSON
-        },
-        body: JSON.stringify(formData)  // Convert formData to JSON string
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Request failed with status ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        // Process and display response
-        let responseContainer = document.getElementById('responseContainer');
-        responseContainer.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-    })
-    .catch(error => {
-        console.error('Error:', error.message);
-        let responseContainer = document.getElementById('responseContainer');
-        responseContainer.innerHTML = `<div style="color: red;">Error: ${error.message}</div>`;
-    });
-}
+                // Get user input
+                var userInput = $('#user_input').val();
 
+                // Send AJAX request to Flask backend
+                $.ajax({
+                    type: 'POST',
+                    url: '/submit',
+                    data: { user_input: userInput },
+                    success: function(response) {
+                        // Display response content on the HTML page
+                        $('#responseContainer').html('<p>' + response.response + '</p>');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                        $('#responseContainer').html('<p>Error: ' + error + '</p>');
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
