@@ -28,6 +28,7 @@ def submit():
     try:
         # Extract user input from the POST request
         user_input = request.form['user_input']
+        print(user_input)
 
         # Send request to OpenAI Chat Completion API with Authorization header
         headers = {
@@ -39,7 +40,7 @@ def submit():
             model="gpt-3.5-turbo-16k",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": user_input}
+                {"role": "user", "content": "why Sky is blue?"}
             ]
         )
 
