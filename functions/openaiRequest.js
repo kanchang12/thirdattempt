@@ -1,7 +1,29 @@
+// openaiRequest.js (Netlify Function)
+
 const fetch = require('node-fetch');
 
-async function generateTextWithMessages() {
-    const openaiEndpoint = 'https://api.openai.com/v1/engines/gpt-3.5-turbo/completions';
+exports.handler = async function(event, context) {
+    try {
+        const requestBody = JSON.parse(event.body);
+        const userInput = requestBody.user_input;
+
+        // Call OpenAI API to generate text based on user input
+        const generatedText = await generateText(userInput);
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ generated_text: generatedText })
+        };
+    } catch (error) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: error.message })
+        };
+    }
+};
+
+async function generateText(userInput) {
+    const openaiEndpoint = 'https://api.openai.com/v1/chat/completions';
     const openaiApiKey = process.env.OPENAI_API_KEY;
 
     const requestData = {
@@ -9,7 +31,7 @@ async function generateTextWithMessages() {
         messages: [
             {
                 role: "user",
-                content: "Can you summarize the plot of the book?"
+                content: userInput
             }
         ],
         temperature: 1,
@@ -37,12 +59,3 @@ async function generateTextWithMessages() {
 
     return generatedText;
 }
-
-// Example usage:
-generateTextWithMessages()
-    .then(generatedText => {
-        console.log("Generated Text:", generatedText);
-    })
-    .catch(error => {
-        console.error("Error:", error);
-    });
