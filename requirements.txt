@@ -3,4 +3,4 @@ openai
 pandas
 gunicorn
 requests
-OpenAI
+OpenAI==1.2.0
