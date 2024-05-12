@@ -25,8 +25,8 @@ def submit():
 
         # Prepare the request payload for the OpenAI API
         request_payload = {
-            "model": "gpt-3.5-turbo-16k",
-        messages: [{"role": "system","content": "You are a french man"},
+            "model": "gpt-3.5-turbo",
+        "messages": [{"role": "system","content": "You are a french man"},
                   {"role": "user","content": "Why Sky is blue?"}
                  ],
             "temperature": 0.7
