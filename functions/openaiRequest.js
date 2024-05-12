@@ -1,32 +1,22 @@
-// functions/openaiRequest.js
 const fetch = require('node-fetch');
 
-exports.handler = async function(event, context) {
-    try {
-        const { user_input } = JSON.parse(event.body);
-
-        // Call the OpenAI API to generate text
-        const generatedText = await generateText(user_input);
-
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ generated_text: generatedText })
-        };
-    } catch (error) {
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ error: error.message })
-        };
-    }
-};
-
-async function generateText(userInput) {
-    const openaiEndpoint = 'https://api.openai.com/v1/chat/completions';
+async function generateTextWithMessages() {
+    const openaiEndpoint = 'https://api.openai.com/v1/engines/gpt-3.5-turbo/completions';
     const openaiApiKey = process.env.OPENAI_API_KEY;
 
     const requestData = {
-        prompt: userInput,
-        max_tokens: 50
+        model: "gpt-3.5-turbo",
+        messages: [
+            {
+                role: "user",
+                content: "Can you summarize the plot of the book?"
+            }
+        ],
+        temperature: 1,
+        max_tokens: 256,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0
     };
 
     const response = await fetch(openaiEndpoint, {
@@ -47,3 +37,12 @@ async function generateText(userInput) {
 
     return generatedText;
 }
+
+// Example usage:
+generateTextWithMessages()
+    .then(generatedText => {
+        console.log("Generated Text:", generatedText);
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
