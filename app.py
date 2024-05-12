@@ -3,53 +3,90 @@ import pandas as pd
 import requests
 from flask import Flask, request, jsonify, render_template
 
+
 app = Flask(__name__)
 
-# API endpoint details
-api_url = "https://api.vertexai.cloud/v1/generative-models/models/gemini-1.0-pro-001:generateContent"
-api_key = os.getenv('apiKey')  # Replace with your API key
-
-def process_csv_data(csv_data):
-    try:
-        # Convert CSV data to DataFrame
-        df = pd.read_csv(csv_data)
-
-        # Perform any necessary data processing here (e.g., cleaning, transformation)
-
-        # Example: Send processed data to API
-        response = requests.post(api_url, json=df.to_dict(orient='records'), headers={'Authorization': f'Bearer {api_key}'})
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return {'error': f'API request failed with status code {response.status_code}'}
-
-    except Exception as e:
-        return {'error': f'Error processing CSV data: {str(e)}'}
-
-@app.route('/')
-def index():
-    return render_template('upload.html')
+# Define your Google Cloud project ID and access token
+PROJECT_ID = "algebraic-ward-422922-e3"
+YOUR_ACCESS_TOKEN = os.getenv('apiKey')
 
 @app.route('/submit', methods=['POST'])
 def submit():
     try:
-        # Check if a file is uploaded
-        if 'file' not in request.files:
-            return jsonify({'error': 'No file uploaded'}), 400
+        # Parse JSON data from the POST request
+        data = request.get_json()
 
-        file = request.files['file']
+        # Extract relevant data from the request (adjust as needed based on your data structure)
+        user_input = data.get('user_input')
+        location = data.get('location')
 
-        # Check if the file has a valid filename
-        if file.filename == '':
-            return jsonify({'error': 'No file selected'}), 400
+        # Prepare the request payload for the Google Cloud AI Platform endpoint
+        endpoint_url = f"https://us-central1-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}/locations/us-central1/publishers/google/models/gemini-1.0-pro:streamGenerateContent"
+        
+        request_payload = {
+            "contents": [
+                {
+                    "role": "USER",
+                    "parts": [
+                        {
+                            "text": user_input
+                        }
+                    ]
+                }
+            ],
+            "systemInstruction": {
+                "role": "USER",
+                "parts": [
+                    {
+                        "text": f"Get the weather for {location}"
+                    }
+                ]
+            },
+            "tools": [
+                {
+                    "functionDeclarations": [
+                        {
+                            "name": "get_current_weather",
+                            "description": "Get the current weather in a given location",
+                            "parameters": {
+                                "location": {
+                                    "type": "string",
+                                    "description": "Location"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ],
+            "generationConfig": {
+                "temperature": 0.5,
+                "topP": 0.9,
+                "topK": 50,
+                "candidateCount": 1,
+                "maxOutputTokens": 100,
+                "stopSequences": [],
+                "responseMimeType": "text/plain"
+            }
+        }
 
-        # Read the CSV file content
-        csv_data = file.read()
+       # Set the query parameters with the API key
+        params = {
+            "key": API_KEY
+        }
 
-        # Process the CSV data and send to API
-        result = process_csv_data(csv_data)
+        # Send the POST request to the Google Cloud AI Platform endpoint with API key
+        response = requests.post(endpoint_url, json=request_payload, params=params)
 
-        return jsonify(result), 200
+        # Send the POST request to the Google Cloud AI Platform endpoint
+        response = requests.post(endpoint_url, json=request_payload, headers=headers)
+
+        # Process the response from the AI Platform endpoint
+        if response.status_code == 200:
+            result = response.json()
+            # Extract and return relevant data from the result as needed
+            return jsonify(result), 200
+        else:
+            return jsonify({'error': f'Request failed with status code {response.status_code}'}), response.status_code
 
     except Exception as e:
         return jsonify({'error': f'Failed to process request: {str(e)}'}), 500
