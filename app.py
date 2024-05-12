@@ -10,6 +10,10 @@ app = Flask(__name__)
 PROJECT_ID = "algebraic-ward-422922-e3"
 YOUR_ACCESS_TOKEN = os.getenv('apiKey')
 
+@app.route('/')
+def index():
+    return render_template('index.html')
+
 @app.route('/submit', methods=['POST'])
 def submit():
     try:
@@ -93,6 +97,8 @@ def submit():
 
     except Exception as e:
         return jsonify({'error': f'Failed to process request: {str(e)}'}), 500
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
