@@ -17,7 +17,7 @@ def index():
     print(index)
     return render_template('index.html')
 
-@app.route('/submit', methods=['POST'])
+@app.route('/submit', methods=['GET', 'POST'])
 def submit():
     try:
         # Extract user input from the POST request
