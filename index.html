@@ -3,45 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenAI API Request</title>
+    <title>Send User Input to Flask</title>
 </head>
 <body>
-    <h1>OpenAI API Request</h1>
-    <form id="inputForm">
-        <label for="userInput">Enter your input:</label>
-        <input type="text" id="userInput" name="user_input">
-        <button type="submit">Submit</button>
-    </form>
-    <div id="responseContainer"></div>
+    <h1>Send User Input to Flask</h1>
+    <input type="text" id="userInput" placeholder="Enter your input">
+    <button onclick="sendInput()">Submit</button>
 
-    <script>
-        document.getElementById('inputForm').addEventListener('submit', async (event) => {
-            event.preventDefault();
-
-            const userInput = document.getElementById('userInput').value;
-
-            try {
-                const response = await fetch('/.netlify/functions/openaiRequest', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ user_input: userInput })
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    const responseContainer = document.getElementById('responseContainer');
-                    responseContainer.innerText = data.generated_text || 'Error processing input';
-                } else {
-                    throw new Error(`Request failed with status: ${response.status}`);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                const responseContainer = document.getElementById('responseContainer');
-                responseContainer.innerText = 'Error processing input';
-            }
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
