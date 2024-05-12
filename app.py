@@ -4,6 +4,12 @@ import io
 
 app = Flask(__name__)
 
+# Dummy function to simulate processing of CSV data
+def process_data(data):
+    # Example: Calculate sum of a column
+    total_sum = data['Amount'].sum()
+    return total_sum
+
 @app.route('/')
 def index():
     return "Hello, this is the homepage!"
@@ -28,14 +34,14 @@ def submit():
         df = pd.read_csv(io.StringIO(file.stream.read().decode('utf-8')))
         print("CSV file contents:")
         print(df.head())  # Optionally print the CSV content
+
+        # Process the CSV data
+        result = process_data(df)
+        response = {'message': f'Data received and processed successfully. Total sum: {result}'}
+        return jsonify(response), 200
+    
     except Exception as e:
-        return jsonify({'error': f'Failed to read CSV: {str(e)}'}), 400
-
-    # Process the user_input and CSV data further here
-
-    # Sending a response back to the JavaScript (optional)
-    response = {'message': 'Data received and processed successfully'}
-    return jsonify(response), 200
+        return jsonify({'error': f'Failed to read or process CSV: {str(e)}'}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)
