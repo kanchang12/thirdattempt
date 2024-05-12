@@ -28,6 +28,7 @@ def submit():
     try:
         # Extract user input from the POST request
         user_input = request.form['user_input']
+        print("user_input")
         print(user_input)
 
         # Send request to OpenAI Chat Completion API with Authorization header
