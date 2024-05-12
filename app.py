@@ -26,7 +26,10 @@ def submit():
         # Prepare the request payload for the OpenAI API
         request_payload = {
             "model": "gpt-3.5-turbo-16k",
-            "messages": [{"role": "user", "content": user_input}],
+             model="gpt-3.5-turbo",
+        messages=[{"role": "system","content": "You are a french man"},
+                  {"role": "user","content": "Why Sky is blue?"}
+                 ],
             "temperature": 0.7
         }
 
@@ -39,7 +42,7 @@ def submit():
         }
 
         # Send the POST request to the OpenAI API
-        endpoint_url = "https://api.openai.com/v1/models"
+        endpoint_url = "https://api.openai.com/v1/chat/completions"
         response = requests.post(endpoint_url, json=request_payload, headers=headers)
 
         # Process the response from the OpenAI API
