@@ -1,36 +1,40 @@
 import os
-import requests
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify
 import openai
-import json
-
 
 app = Flask(__name__)
+
+# Define the OpenAI API key
+OPENAI_API_KEY = os.getenv('apiKey')
+openai.api_key = OPENAI_API_KEY
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-
-
-# Define the OpenAI API key and project details
-OPENAI_API_KEY = os.getenv('apiKey')
-print(OPENAI_API_KEY)
-client = openai.OpenAI(api_key=OPENAI_API_KEY)
-
-@app.route('/submit', methods=['GET', 'POST'])
+@app.route('/submit', methods=['POST'])
 def submit():
-    completion = client.chat.completions.create(
-        model="gpt-3.5-turbo-16k",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": "Hello!"}
-        ]
-)
+    try:
+        # Get user input from the form
+        user_input = request.form.get('user_input')
 
-print(completion.choices[0].message)
-    
+        # Prepare the chat completion request to OpenAI
+        completion = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo-16k",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": user_input}
+            ]
+        )
 
+        # Extract the response message content
+        response_content = completion['choices'][0]['message']['content']
+
+        # Return the response in JSON format
+        return jsonify({'response': response_content}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
