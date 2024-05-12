@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 # API endpoint details
 api_url = "https://api.vertexai.cloud/v1/generative-models/models/gemini-1.0-pro-001:generateContent"
-api_key = os.getenv(apiKey)  # Replace with your API key
+api_key = os.getenv('apiKey')  # Replace with your API key
 
 def process_csv_data(csv_data):
     try:
