@@ -2,7 +2,8 @@ import os
 import pandas as pd
 import requests
 from flask import Flask, request, jsonify, render_template
-
+from openai import OpenAI
+client = OpenAI()
 
 app = Flask(__name__)
 
