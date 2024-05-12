@@ -20,9 +20,8 @@ def submit():
         # Parse JSON data from the POST request
         data = request.get_json()
 
-        # Extract relevant data from the request (adjust as needed based on your data structure)
+        # Extract relevant data from the request
         user_input = data.get('user_input')
-        #location = data.get('location')
 
         # Prepare the request payload for the Google Cloud AI Platform endpoint
         endpoint_url = f"https://us-central1-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}/locations/us-central1/publishers/google/models/gemini-1.0-pro:streamGenerateContent"
@@ -41,10 +40,10 @@ def submit():
             "systemInstruction": {
                 "role": "USER",
                 "parts": [
-                     {
+                    {
                         "fileData": {
                             "mimeType": "text/plain",
-                            "fileUri": "https://gist.githubusercontent.com/kanchang12/509b21ef02ab5aefa526b956925423b7/raw/f2dc0569a96b9b4658e38486caefbd19f3572fb7/system_instruction.txt"  # Provide the URL of the file containing data
+                            "fileUri": "https://gist.githubusercontent.com/kanchang12/509b21ef02ab5aefa526b956925423b7/raw/f2dc0569a96b9b4658e38486caefbd19f3572fb7/system_instruction.txt"
                         }
                     }
                 ]
@@ -76,21 +75,12 @@ def submit():
             }
         }
 
-       # Set the query parameters with the API key
-        params = {
-            "key": API_KEY
-        }
-
-        # Send the POST request to the Google Cloud AI Platform endpoint with API key
-        response = requests.post(endpoint_url, json=request_payload, params=params)
-
         # Send the POST request to the Google Cloud AI Platform endpoint
-        response = requests.post(endpoint_url, json=request_payload, headers=headers)
+        response = requests.post(endpoint_url, json=request_payload)
 
         # Process the response from the AI Platform endpoint
         if response.status_code == 200:
             result = response.json()
-            # Extract and return relevant data from the result as needed
             return jsonify(result), 200
         else:
             return jsonify({'error': f'Request failed with status code {response.status_code}'}), response.status_code
