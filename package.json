@@ -1,0 +1,12 @@
+{
+  "name": "my-netlify-project",
+  "version": "1.0.0",
+  "description": "My Netlify project",
+  "dependencies": {
+    "axios": "^0.24.0"
+    // Add other dependencies here...
+  },
+  "devDependencies": {
+    // Add dev dependencies here if needed...
+  }
+}
