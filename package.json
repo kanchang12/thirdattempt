@@ -4,9 +4,5 @@
   "description": "My Netlify project",
   "dependencies": {
     "axios": "^0.24.0"
-    // Add other dependencies here...
-  },
-  "devDependencies": {
-    // Add dev dependencies here if needed...
+   
   }
-}
