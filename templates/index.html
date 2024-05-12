@@ -7,8 +7,6 @@
 <body>
     <h2>OpenAI Chat API Example</h2>
     <form id="chatForm">
-        <label for="user_input">User Input:</label>
-        <input type="text" id="user_input" name="user_input">
         <button type="submit">Submit</button>
     </form>
     
@@ -20,20 +18,11 @@
             $('#chatForm').submit(function(event) {
                 event.preventDefault();
 
-                // Get user input
-                var userInput = $('#user_input').val();
-
-                // Determine the request method (GET or POST)
-                var requestMethod = 'POST'; // Default to POST
-                if (userInput.toLowerCase() === 'get') {
-                    requestMethod = 'GET';
-                }
-
                 // Send AJAX request to Flask backend
                 $.ajax({
-                    type: requestMethod,
+                    type: 'POST',
                     url: '/submit',
-                    data: { user_input: userInput },
+                    data: { user_input: "hi" }, // Hardcoded message "hi"
                     success: function(response) {
                         // Display response content on the HTML page
                         $('#responseContainer').html('<p>' + response.response + '</p>');
