@@ -23,9 +23,15 @@
                 // Get user input
                 var userInput = $('#user_input').val();
 
+                // Determine the request method (GET or POST)
+                var requestMethod = 'POST'; // Default to POST
+                if (userInput.toLowerCase() === 'get') {
+                    requestMethod = 'GET';
+                }
+
                 // Send AJAX request to Flask backend
                 $.ajax({
-                    type: 'POST',
+                    type: requestMethod,
                     url: '/submit',
                     data: { user_input: userInput },
                     success: function(response) {
