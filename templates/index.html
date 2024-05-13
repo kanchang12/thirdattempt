@@ -41,6 +41,20 @@
       justify-content: space-between;
       margin-top: 10px;
     }
+
+    .info-text {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 200px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      background-color: #f9f9f9;
+      font-size: 0.8em;
+      text-align: justify;
+    }
+
+    
   </style>
 </head>
 <body>
@@ -61,6 +75,14 @@
       <button onclick="downloadText('txt')">Download as TXT</button>
       <button onclick="downloadText('doc')">Download as DOC</button>
     </div>
+  </div>
+
+  <!-- Informational Text Box -->
+  <div class="info-text">
+    <p>
+      This is a prototype for a report-building app. Upload a dataset in CSV format and write a short note about what you need. The model will generate a sample analysis on how to proceed with writing a report. Please note that this is a prototype, and the results are <strong>not of professional standard.</strong>
+    </p>
+    <a href="https://github.com/kanchang12/thirdattempt/blob/main/sampledata.csv" class="download-link" download="sample_dataset.csv">Download sample CSV dataset</a>
   </div>
 
   <script>
